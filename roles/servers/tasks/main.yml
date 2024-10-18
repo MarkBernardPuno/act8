@@ -1,4 +1,3 @@
----
 - name: Install dependencies for Nagios on Ubuntu
   apt:
     name:
@@ -19,8 +18,38 @@
     dest: /opt/
     remote_src: yes
 
-- name: Compile and Install Nagios
-  command: ./configure --with-httpd-conf=/etc/apache2/sites-enabled/ && make all && make install && make install-init && make install-config && make install-commandmode && make install-webconf
+- name: Configure Nagios
+  command: ./configure --with-httpd-conf=/etc/apache2/sites-enabled/
+  args:
+    chdir: /opt/nagios-4.4.6
+
+- name: Build Nagios
+  command: make all
+  args:
+    chdir: /opt/nagios-4.4.6
+
+- name: Install Nagios
+  command: make install
+  args:
+    chdir: /opt/nagios-4.4.6
+
+- name: Install Nagios init scripts
+  command: make install-init
+  args:
+    chdir: /opt/nagios-4.4.6
+
+- name: Install Nagios config
+  command: make install-config
+  args:
+    chdir: /opt/nagios-4.4.6
+
+- name: Install Nagios command mode
+  command: make install-commandmode
+  args:
+    chdir: /opt/nagios-4.4.6
+
+- name: Install Nagios web configuration
+  command: make install-webconf
   args:
     chdir: /opt/nagios-4.4.6
 
