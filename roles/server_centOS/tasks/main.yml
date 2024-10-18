@@ -4,6 +4,7 @@
       - httpd
       - php
       - wget
+      - gcc
     state: present
 
 - name: Download Nagios tarball
