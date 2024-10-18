@@ -1,0 +1,5 @@
+---
+- name: Install Nagios on Ubuntu
+  apt:
+    name: nagios3
+    state: present
