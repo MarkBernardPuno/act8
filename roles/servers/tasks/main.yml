@@ -1,5 +1,34 @@
 ---
-- name: Install Nagios on Ubuntu
+- name: Install dependencies for Nagios on Ubuntu
   apt:
-    name: nagios4
+    name:
+      - apache2
+      - php
+      - libapache2-mod-php
+      - wget
     state: present
+
+- name: Download Nagios tarball
+  get_url:
+    url: https://assets.nagios.com/downloads/nagioscore/releases/nagios-4.4.6.tar.gz
+    dest: /tmp/nagios.tar.gz
+
+- name: Extract Nagios tarball
+  unarchive:
+    src: /tmp/nagios.tar.gz
+    dest: /opt/
+    remote_src: yes
+
+- name: Compile and Install Nagios
+  command: ./configure --with-httpd-conf=/etc/apache2/sites-enabled/ && make all && make install && make install-init && make install-config && make install-commandmode && make install-webconf
+  args:
+    chdir: /opt/nagios-4.4.6
+
+- name: Configure Nagios Admin User
+  command: htpasswd -b -c /usr/local/nagios/etc/htpasswd.users nagiosadmin password
+
+- name: Enable and Start Apache
+  systemd:
+    name: apache2
+    enabled: yes
+    state: started
